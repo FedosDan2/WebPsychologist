@@ -1,0 +1,243 @@
+{
+  "dialog_id": 2,
+  "title": "Близкие друзья",
+  "topic_words": {},
+  "participants_analysis": {
+    "Катя": {
+      "messages_count": 11,
+      "emotions_median": {
+        "negative": 0.289,
+        "neutral": 0.433,
+        "positive": 0.177
+      },
+      "topic_ratios": {
+        "-2": 1.0
+      },
+      "messages": [
+        {
+          "text": "Марин, ты где пропала? Всё нормально?",
+          "time": "20:12",
+          "emotion_scores": {
+            "negative": 0.575,
+            "neutral": 0.386,
+            "positive": 0.039
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Из-за работы или снова этот Артём?",
+          "time": "20:29",
+          "emotion_scores": {
+            "negative": 0.657,
+            "neutral": 0.318,
+            "positive": 0.025
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Ты же вроде его заблокировала.",
+          "time": "20:34",
+          "emotion_scores": {
+            "negative": 0.608,
+            "neutral": 0.338,
+            "positive": 0.054
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "😑 Марин...",
+          "time": "20:37",
+          "emotion_scores": {
+            "negative": 0.268,
+            "neutral": 0.445,
+            "positive": 0.287
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Это нормально скучать. Но он тебя снова ранит.",
+          "time": "20:42",
+          "emotion_scores": {
+            "negative": 0.741,
+            "neutral": 0.219,
+            "positive": 0.039
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Он говорил так и в прошлый раз.",
+          "time": "20:47",
+          "emotion_scores": {
+            "negative": 0.214,
+            "neutral": 0.703,
+            "positive": 0.083
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Если бы хотел — доказал бы делом, а не словами.",
+          "time": "20:52",
+          "emotion_scores": {
+            "negative": 0.289,
+            "neutral": 0.534,
+            "positive": 0.177
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Только если не ждёшь, что он «починит» тебе настроение.",
+          "time": "20:58",
+          "emotion_scores": {
+            "negative": 0.132,
+            "neutral": 0.651,
+            "positive": 0.216
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Давай завтра кофе, поговорим нормально.",
+          "time": "21:03",
+          "emotion_scores": {
+            "negative": 0.084,
+            "neutral": 0.675,
+            "positive": 0.241
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Я тебя слишком люблю, чтобы молчать ❤️",
+          "time": "21:06",
+          "emotion_scores": {
+            "negative": 0.275,
+            "neutral": 0.433,
+            "positive": 0.291
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "И принеси фото кота. Он явно меньше парится.",
+          "time": "21:10",
+          "emotion_scores": {
+            "negative": 0.307,
+            "neutral": 0.424,
+            "positive": 0.269
+          },
+          "topic_id": -2
+        }
+      ]
+    },
+    "Марина": {
+      "messages_count": 10,
+      "emotions_median": {
+        "negative": 0.289,
+        "neutral": 0.442,
+        "positive": 0.097
+      },
+      "topic_ratios": {
+        "-2": 1.0
+      },
+      "messages": [
+        {
+          "text": "Привет. Просто немного выгорела.",
+          "time": "20:27",
+          "emotion_scores": {
+            "negative": 0.742,
+            "neutral": 0.198,
+            "positive": 0.06
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Наверное, из-за всего сразу.",
+          "time": "20:31",
+          "emotion_scores": {
+            "negative": 0.52,
+            "neutral": 0.43,
+            "positive": 0.05
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Разблокировала. Он написал.",
+          "time": "20:36",
+          "emotion_scores": {
+            "negative": 0.336,
+            "neutral": 0.602,
+            "positive": 0.063
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Знаю, знаю. Просто скучала.",
+          "time": "20:38",
+          "emotion_scores": {
+            "negative": 0.668,
+            "neutral": 0.265,
+            "positive": 0.067
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Он сказал, что изменился.",
+          "time": "20:45",
+          "emotion_scores": {
+            "negative": 0.181,
+            "neutral": 0.693,
+            "positive": 0.126
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "А вдруг теперь правда?",
+          "time": "20:50",
+          "emotion_scores": {
+            "negative": 0.358,
+            "neutral": 0.578,
+            "positive": 0.064
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Может, стоит дать шанс?",
+          "time": "20:55",
+          "emotion_scores": {
+            "negative": 0.148,
+            "neutral": 0.67,
+            "positive": 0.181
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Ммм, мудро.",
+          "time": "21:01",
+          "emotion_scores": {
+            "negative": 0.242,
+            "neutral": 0.192,
+            "positive": 0.566
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "Давай. Спасибо, что не осуждаешь.",
+          "time": "21:04",
+          "emotion_scores": {
+            "negative": 0.083,
+            "neutral": 0.192,
+            "positive": 0.725
+          },
+          "topic_id": -2
+        },
+        {
+          "text": "😂 обязательно.",
+          "time": "21:12",
+          "emotion_scores": {
+            "negative": 0.179,
+            "neutral": 0.453,
+            "positive": 0.368
+          },
+          "topic_id": -2
+        }
+      ]
+    }
+  }
+}
