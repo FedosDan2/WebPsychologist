@@ -1,15 +1,23 @@
-from transformers import pipeline
+from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer
 import json
 import os
 import re
 import statistics
 from collections import defaultdict
-from topic_analyze import extract_topics_from_dialog  # твоя LLM-функция
+#from topic_analyze import extract_topics_from_dialog  # LLM-функция
+from interpret_analyze import interpret_analysis # Функция антерпретатора
 
-# ✅ Эмоции
+
+# ✅ Загружаем модель и токенизатор ВРУЧНУЮ с use_fast=False
+print("📥 Загружаем модель эмоций...")
+model_name = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
+tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
+model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
 emotion_model = pipeline(
     "text-classification",
-    model="cardiffnlp/twitter-xlm-roberta-base-sentiment",
+    model=model,
+    tokenizer=tokenizer,
     return_all_scores=True,
     top_k=None
 )
@@ -75,16 +83,16 @@ def analyze_participant(sender, messages):
         emotions_median.setdefault(k, 0.0)
 
     # 🔥 Получаем темы через LLM (только по текстам этого участника)
-    try:
-        participant_topics = extract_topics_from_dialog(messages)
-    except Exception as e:
-        print(f"⚠️ Ошибка LLM для {sender}: {e}")
-        participant_topics = ["ошибка_темы"]
+    # try:
+    #     participant_topics = extract_topics_from_dialog(messages)
+    # except Exception as e:
+    #     print(f"⚠️ Ошибка LLM для {sender}: {e}")
+    #     participant_topics = ["ошибка_темы"]
 
     return {
         "messages_count": len(messages_out),
         "emotions_median": emotions_median,
-        "topics": participant_topics,  # ← список строк
+        #"topics": participant_topics,  # ← список строк
         "messages": messages_out
     }
 
@@ -113,17 +121,17 @@ def analyze_dialog_by_participant(dialog_path):
         except Exception as e:
             participants_data[sender] = {"error": str(e)}
 
-    # 🔥 Темы для ВСЕГО диалога (опционально)
-    try:
-        dialog_topics = extract_topics_from_dialog(messages)
-    except Exception as e:
-        print(f"⚠️ Ошибка LLM на всём диалоге: {e}")
-        dialog_topics = ["ошибка_темы"]
+    # # 🔥 Темы для ВСЕГО диалога (опционально)
+    # try:
+    #     dialog_topics = extract_topics_from_dialog(messages)
+    # except Exception as e:
+    #     print(f"⚠️ Ошибка LLM на всём диалоге: {e}")
+    #     dialog_topics = ["ошибка_темы"]
 
     return {
         "dialog_id": data.get("dialog_id") or data.get("id"),
         "title": data.get("title"),
-        "dialog_topics": dialog_topics,           # темы всего диалога
+        # "dialog_topics": dialog_topics,           # темы всего диалога
         "participants_analysis": participants_data
     }
 
@@ -134,11 +142,34 @@ def main():
     fpath = "/home/fedosdan2/prog/pr_act/PROJECT/backend/dialogs/2.json"
     f = os.path.basename(fpath)
     res = analyze_dialog_by_participant(fpath)
+
     out_path = os.path.join(out_dir, f"{os.path.splitext(f)[0]}_analysis.json")
     with open(out_path, "w", encoding="utf-8") as out:
         json.dump(res, out, indent=2, ensure_ascii=False)
 
     print(f"✅ {f} → сохранён в {out_path}")
+
+    # 🔍 Проверяем, что анализ прошёл успешно
+    if "error" in res:
+        print(f"⚠️ Пропуск интерпретации: {res['error']}")
+        return
+
+    try:
+        interpretation = interpret_analysis(res)
+        print("\n🧠 Интерпретация:")
+        print(interpretation)
+
+        interp_path = os.path.join(out_dir, f"{os.path.splitext(f)[0]}_interpretation.txt")
+        with open(interp_path, "w", encoding="utf-8") as f_out:
+            f_out.write(interpretation)
+        print(f"📄 Интерпретация сохранена в {interp_path}")
+
+    except Exception as e:
+        print(f"❌ Ошибка интерпретации: {e}")
+        # Сохраняем заглушку
+        interp_path = os.path.join(out_dir, f"{os.path.splitext(f)[0]}_interpretation.txt")
+        with open(interp_path, "w", encoding="utf-8") as f_out:
+            f_out.write(f"Ошибка генерации интерпретации: {e}")
 
 if __name__ == "__main__":
     main()

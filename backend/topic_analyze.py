@@ -1,49 +1,60 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+# topic_analyze.py
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 import torch
 
-# Загрузка модели в 4-битном режиме (экономия памяти)
-model_id = "microsoft/Phi-3-mini-4k-instruct"
+# Загружаем ОДИН РАЗ (глобально)
+_model = None
+_tokenizer = None
 
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForCausalLM.from_pretrained(
-    model_id,
-    device_map="auto",
-    torch_dtype=torch.float16,       # или "auto"
-    trust_remote_code=True,
-    load_in_4bit=True                # ← квантование до 4 бит
-)
+def get_model():
+    global _model, _tokenizer
+    if _model is None:
+        print("📥 Загружаем rut5-base-absum...")
+        _model = T5ForConditionalGeneration.from_pretrained("cointegrated/rut5-base-absum")
+        _tokenizer = T5Tokenizer.from_pretrained("cointegrated/rut5-base-absum")
+        if torch.cuda.is_available():
+            _model.cuda()
+    return _model, _tokenizer
 
-def extract_topics_from_dialog(messages, max_new_tokens=100):
-    # Объединяем сообщения в один текст
-    dialog_text = "\n".join([f"{m.get('sender', '')}: {m.get('text', '')}" for m in messages])
+def extract_topics_from_dialog(messages, max_length=64):
+    # Объединяем диалог в текст
+    dialog = "\n".join([
+        f"{m.get('sender', '')}: {m.get('text', '')}" 
+        for m in messages 
+        if m.get("text")
+    ])
     
-    prompt = f"""Определи основные темы этого диалога. Ответь списком тем через запятую, c пояснениями.
+    if not dialog.strip():
+        return ["пустой_диалог"]
 
-        Диалог:
-        {dialog_text}
-
-        Темы:"""
-
-    messages_prompt = [
-        {"role": "user", "content": prompt}
-    ]
-
-    input_ids = tokenizer.apply_chat_template(
-        messages_prompt,
-        add_generation_prompt=True,
-        return_tensors="pt"
-    ).to(model.device)
-
-    outputs = model.generate(
-        input_ids,
-        max_new_tokens=max_new_tokens,
-        do_sample=False,         # детерминированно
-        pad_token_id=tokenizer.eos_token_id
-    )
-
-    response = outputs[0][input_ids.shape[-1]:]
-    topics_str = tokenizer.decode(response, skip_special_tokens=True).strip()
+    model, tokenizer = get_model()
     
-    # Разбиваем на список
-    topics = [t.strip() for t in topics_str.split(",") if t.strip()]
-    return topics
+    # T5 требует префикс задачи
+    input_text = "заголовок: " + dialog
+    input_ids = tokenizer(
+        input_text,
+        return_tensors="pt",
+        max_length=512,
+        truncation=True
+    ).input_ids
+
+    if torch.cuda.is_available():
+        input_ids = input_ids.cuda()
+
+    with torch.no_grad():
+        outputs = model.generate(
+            input_ids,
+            max_length=max_length,
+            min_length=5,
+            no_repeat_ngram_size=2,
+            do_sample=False,  # детерминированно
+            early_stopping=True
+        )
+
+    summary = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
+    # Превращаем заголовок в темы: разбиваем по ключевым словам
+    # Например: "Дети играют на кухне" → ["дети", "игра", "кухня"]
+    keywords = summary.lower().strip(" .,").split()
+    # Можно улучшить через простой фильтр (удалить стоп-слова), но и так сойдёт
+    return keywords[:5]  # максимум 5 тем
