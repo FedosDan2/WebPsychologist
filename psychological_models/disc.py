@@ -73,3 +73,39 @@ def get_disc_profile(scores):
     dominant_types = [t for t, s in scores.items() if s == max_score]
     
     return dominant_types[0] if dominant_types else "S"  # по умолчанию Steadiness
+
+
+if __name__ == "__main__":
+    print("=== ТЕСТ DISC ОПРОСНИКА ===")
+    print("Для теста используем заранее заданные ответы")
+    print("(чтобы избежать проблем с вводом)")
+    
+    # Тестовые данные - МЕНЯЙ ЗДЕСЬ для разных тестов
+    test_answers = ["I", "D", "S", "C", "I"]
+    
+    questions = disc_questionnaire()
+    
+    print("\n--- Вопросы и ответы ---")
+    for i, q in enumerate(questions):
+        answer = test_answers[i]
+        print(f"{q['id']}. {q['question']}")
+        print(f"   Ответ: {answer} - {q['options'][answer]}")
+    
+    # Считаем результаты
+    scores = calculate_disc_score(test_answers)
+    profile = get_disc_profile(scores)
+    
+    print(f"\n=== ВАШ РЕЗУЛЬТАТ ===")
+    print(f"Баллы: {scores}")
+    print(f"Ваш DISC тип: {profile}")
+    
+    # Интерпретация результатов
+    type_descriptions = {
+        "D": "Решительный, ориентированный на результат",
+        "I": "Общительный, эмоциональный, вдохновляющий", 
+        "S": "Стабильный, надежный, спокойный",
+        "C": "Аналитичный, точный, системный"
+    }
+    
+    print(f"Описание: {type_descriptions.get(profile, 'Не определен')}")
+    print("\nДля изменения теста поменяй список test_answers в коде")
