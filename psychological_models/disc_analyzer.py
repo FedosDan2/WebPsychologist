@@ -45,7 +45,7 @@ class DISCAnalyzer:
         """Анализирует весь JSON файл диалога"""
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
+    
         results = {}
         
         for participant, info in data['participants_analysis'].items():
@@ -68,15 +68,13 @@ class DISCAnalyzer:
                 percentages = {style: 0 for style in all_scores}
                 dominant_style = "S"  # по умолчанию
             
-            results[participant] = {
-                'raw_scores': all_scores,
-                'percentages': percentages,
-                'dominant_style': dominant_style,
-                'messages_count': info['messages_count'],
-                'emotions_median': info['emotions_median']
-            }
+            # ВОЗВРАЩАЕМ ДОПОЛНИТЕЛЬНЫЕ ДАННЫЕ
+        return {
+        'disc_results': results,
+        'dialog_title': data.get('title', 'Без названия'),
+        'raw_data': data  # на всякий случай
+        }
         
-        return results
     
 
 def compare_with_self_assessment(real_style, self_assessment):
