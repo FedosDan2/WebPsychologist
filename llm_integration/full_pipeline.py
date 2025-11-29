@@ -14,7 +14,7 @@ def run_full_analysis():
     print("=" * 50)
     
     # 1. Анализируем диск
-    print("🔍 Анализирую стили общения...")
+    print("Анализирую стили общения...")
     disc_analyzer = DISCAnalyzer()
     
     files = [
@@ -52,7 +52,7 @@ def run_full_analysis():
         disc_results = all_results[first_file]['disc_results']
         dialog_title = all_results[first_file]['dialog_title']
         
-        print(f"\n💡 Запрашиваю рекомендации для: {dialog_title}")
+        print(f"\nЗапрашиваю рекомендации для: {dialog_title}")
         
         advice = advisor.get_recommendations(disc_results, dialog_title)
         print("\nРЕКОМЕНДАЦИИ ОТ PSYCH-LLM:")
