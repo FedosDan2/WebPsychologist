@@ -4,10 +4,10 @@ from collections import Counter
 
 class DISCAnalyzer:
     def __init__(self):
-        self.d_keywords = ["срочно", "результат", "контроль", "решаю", "быстро", "успех", "должны", "обязательно"]
-        self.i_keywords = ["отлично", "супер", "круто", "вместе", "команда", "спасибо", "❤️", "😊", "😂"]
-        self.s_keywords = ["спокойно", "помощь", "поддержка", "стабильность", "доверие", "понимаю", "ладно"]
-        self.c_keywords = ["анализ", "данные", "детали", "проверить", "точность", "отчёт", "проект", "интерфейс"]
+        self.d_keywords = ["срочно", "результат", "контроль", "решаю", "быстро", "успех", "должны", "обязательно", "дедлайн", "план"]
+        self.i_keywords = ["отлично", "супер", "круто", "вместе", "команда", "спасибо", "❤️", "😊", "😂", "рад", "привет"]
+        self.s_keywords = ["спокойно", "помощь", "поддержка", "стабильность", "доверие", "понимаю", "ладно", "хорошо", "нормально"]
+        self.c_keywords = ["анализ", "данные", "детали", "проверить", "точность", "отчёт", "проект", "интерфейс", "проверка", "числа"]
     
     def analyze_text(self, text):
         """Анализирует текст и возвращает DISC баллы"""
@@ -45,7 +45,7 @@ class DISCAnalyzer:
         """Анализирует весь JSON файл диалога"""
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-    
+        
         results = {}
         
         for participant, info in data['participants_analysis'].items():
@@ -68,57 +68,35 @@ class DISCAnalyzer:
                 percentages = {style: 0 for style in all_scores}
                 dominant_style = "S"  # по умолчанию
             
-            # ВОЗВРАЩАЕМ ДОПОЛНИТЕЛЬНЫЕ ДАННЫЕ
-        return {
-        'disc_results': results,
-        'dialog_title': data.get('title', 'Без названия'),
-        'raw_data': data  # на всякий случай
-        }
+            results[participant] = {
+                'raw_scores': all_scores,
+                'percentages': percentages,
+                'dominant_style': dominant_style,
+                'messages_count': info['messages_count'],
+                'emotions_median': info['emotions_median']
+            }
         
-    
-
-def compare_with_self_assessment(real_style, self_assessment):
-    """Сравнивает реальный стиль с самооценкой"""
-    comparison = {
-        'match': real_style == self_assessment,
-        'real_style': real_style,
-        'self_assessment': self_assessment
-    }
-    
-    if real_style != self_assessment:
-        style_descriptions = {
-            "D": "решительный, ориентированный на результат",
-            "I": "общительный, эмоциональный", 
-            "S": "стабильный, поддерживающий",
-            "C": "аналитичный, системный"
+        return {
+            'disc_results': results,
+            'dialog_title': data.get('title', 'Без названия'),
+            'raw_data': data
         }
-        comparison['insight'] = (
-            f"Вы считаете себя {style_descriptions[self_assessment]}, "
-            f"но в переписке проявляетесь как {style_descriptions[real_style]}"
-        )
-    
-    return comparison
 
-# Тестирование на реальных данных
+# Тестирование
 if __name__ == "__main__":
     analyzer = DISCAnalyzer()
     
-    # Протестируем на обоих файлах
     files = [
         "backend/analysis_results/1_analysis.json", 
         "backend/analysis_results/2_analysis.json"
     ]
     
-    for file in files:
-        if os.path.exists(file):
-            print(f"\n=== Анализ файла: {file} ===")
-            results = analyzer.analyze_dialog_file(file)
+    for file_path in files:
+        if os.path.exists(file_path):
+            print(f"\n=== Анализ файла: {file_path} ===")
+            results = analyzer.analyze_dialog_file(file_path)
             
-            for participant, data in results.items():
+            for participant, data in results['disc_results'].items():
                 print(f"\n👤 {participant}:")
                 print(f"   Доминирующий стиль: {data['dominant_style']}")
                 print(f"   Распределение: {data['percentages']}")
-                print(f"   Сообщений: {data['messages_count']}")
-                print(f"   Эмоции: {data['emotions_median']}")
-        else:
-            print(f"Файл {file} не найден, проверь путь")
