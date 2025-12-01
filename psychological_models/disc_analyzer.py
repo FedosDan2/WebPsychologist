@@ -1,7 +1,10 @@
 import json
 import os
 from collections import Counter
+from .topic_analyzer import TopicAnalyzer
 
+
+# !!! Рекомендация для Феди: юзай smart_analyzer()
 class DISCAnalyzer:
     def __init__(self):
         self.d_keywords = ["срочно", "результат", "контроль", "решаю", "быстро", "успех", "должны", "обязательно", "дедлайн", "план"]
@@ -131,12 +134,33 @@ class DISCAnalyzer:
                 'emotion_analysis': emotion_stats  # ДОБАВЛЯЕМ АНАЛИЗ ЭМОЦИЙ
             }
         
-        return {
-            'disc_results': results,
-            'dialog_title': data.get('title', 'Без названия'),
-            'raw_data': data
-        }
-
+        # АНАЛИЗ ТЕМ
+        if 'messages' in data:
+            # Для сырых данных
+            topic_results = self.topic_analyzer.analyze_dialog_topics(
+                data['messages'], 
+                data.get('participants', [])
+            )
+        elif 'participants_analysis' in data:
+            # Для обработанных данных - собираем сообщения
+            all_messages = []
+            participants = []
+            for participant, info in data['participants_analysis'].items():
+                participants.append(participant)
+                for msg in info['messages']:
+                    all_messages.append({
+                        'sender': participant,
+                        'text': msg['text']
+                    })
+            topic_results = self.topic_analyzer.analyze_dialog_topics(
+                all_messages, 
+                participants
+            )
+        else:
+            topic_results = {'dominant_topics': [], 'participant_interests': {}}
+        
+        # Добавляем тему в результаты
+        results['topic_analysis'] = topic_results
     def get_emotional_insights(self, disc_results):
         """Генерирует инсайты на основе эмоций и DISC стилей"""
         insights = []
@@ -314,13 +338,13 @@ if __name__ == "__main__":
     
     for file_path in test_files:
         if os.path.exists(file_path):
-            print(f"\n🔍 Анализ файла: {file_path}")
+            print(f"\n Анализ файла: {file_path}")
             try:
                 results = analyzer.smart_analyze(file_path)
-                print(f"📊 Тип данных: {results['data_type']}")
+                print(f" Тип данных: {results['data_type']}")
                 
                 for participant, data in results['disc_results'].items():
-                    print(f"   👤 {participant}: {data['dominant_style']}-тип")
+                    print(f"    {participant}: {data['dominant_style']}-тип")
                     
             except Exception as e:
-                print(f"❌ Ошибка: {e}")
+                print(f" Ошибка: {e}")
