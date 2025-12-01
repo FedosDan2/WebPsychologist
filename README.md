@@ -72,12 +72,12 @@ PROJECT/
 ├── analysis_results/          # Точка сохранения результатов анализа
 ├── backend/
     ├── analyzers/ 
-       ├── disc_class.py       # Класс DISC анализатора
-       └── emotion_class.py    # Класс эмоционального анализа
+        ├── disc_class.py       # Класс DISC анализатора
+        └── emotion_class.py    # Класс эмоционального анализа
     ├── database/
         └──  server.py         # В будущем будет сделана база данных
     ├── model/
-│       ├── llm_class.py       # Класс LLM
+        ├── llm_class.py       # Класс LLM
         └── psych_advisor.py   # Советчик LLM
     └── main.py # Центр запуска
 ├── dialogs/                   # Хранилище тестовых диалогов
