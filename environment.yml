@@ -1,0 +1,10 @@
+name: webPsycho
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - numpy
+  - pandas
+  - transformers
+  - fastapi
+  

@@ -81,7 +81,7 @@ BASE_BACKGROUND_NAMES = [
 ]
 
 # === APP ===
-app = FastAPI(title="Human Segmentation App")
+app = FastAPI(title="webPsycho")
 
 app.add_middleware(
     CORSMiddleware,
@@ -169,51 +169,6 @@ async def get_user_file(user_id: str, filename: str):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(path)
 
-
-# === PRIVACY SETTINGS ===
-from fastapi import Body
-
-PRIVACY_FILE = "privacy.json"
-
-@app.post("/privacy/{user_id}")
-async def set_privacy(user_id: str, data: dict = Body(...)):
-    """
-    Сохраняет настройки приватности пользователя в privacy.json.
-    Пример тела запроса: {"level": "high"}
-    """
-    if user_id not in users_db:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    user_dir = os.path.join(USERS_DIR, user_id)
-    os.makedirs(user_dir, exist_ok=True)
-
-    path = os.path.join(user_dir, PRIVACY_FILE)
-    payload = {
-        "level": data.get("level", "low"),
-        "timestamp": datetime.now(timezone.utc).isoformat()
-    }
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
-
-    return {"message": "Privacy settings updated", "data": payload}
-
-
-@app.get("/privacy/{user_id}")
-async def get_privacy(user_id: str):
-    """
-    Возвращает текущие настройки приватности пользователя.
-    """
-    if user_id not in users_db:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    path = os.path.join(USERS_DIR, user_id, PRIVACY_FILE)
-    if not os.path.exists(path):
-        # Если файла нет — вернуть дефолтные
-        return {"level": "low", "timestamp": None}
-
-    with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data
 
 
 # === FRONTEND ===
