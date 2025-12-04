@@ -1,0 +1,71 @@
+{
+  "dialog_id": 7256819129,
+  "title": "Антон сосед",
+  "total_messages_analyzed": 1291,
+  "dominant_topics": [
+    {
+      "topic": "быт",
+      "count": 45,
+      "percentage": 32.6
+    },
+    {
+      "topic": "работа",
+      "count": 21,
+      "percentage": 15.2
+    },
+    {
+      "topic": "отдых",
+      "count": 17,
+      "percentage": 12.3
+    },
+    {
+      "topic": "благодарность",
+      "count": 11,
+      "percentage": 8.0
+    },
+    {
+      "topic": "поддержка",
+      "count": 11,
+      "percentage": 8.0
+    }
+  ],
+  "participants_analysis": {
+    "Антон сосед": {
+      "error": "The expanded size of the tensor (630) must match the existing size (514) at non-singleton dimension 1.  Target sizes: [1, 630].  Tensor sizes: [1, 514]",
+      "topic_interests": {
+        "main_interest": "быт",
+        "all_topics": {
+          "отдых": 11,
+          "работа": 17,
+          "благодарность": 5,
+          "финансы": 6,
+          "просьба": 9,
+          "быт": 31,
+          "поддержка": 9,
+          "проблемы": 4,
+          "семья": 1,
+          "планы": 2
+        }
+      }
+    },
+    "Федя Данилов": {
+      "error": "The expanded size of the tensor (828) must match the existing size (514) at non-singleton dimension 1.  Target sizes: [1, 828].  Tensor sizes: [1, 514]",
+      "topic_interests": {
+        "main_interest": "быт",
+        "all_topics": {
+          "быт": 14,
+          "благодарность": 6,
+          "отдых": 6,
+          "радость": 3,
+          "просьба": 1,
+          "семья": 2,
+          "извинение": 1,
+          "работа": 4,
+          "проблемы": 3,
+          "поддержка": 2,
+          "здоровье": 1
+        }
+      }
+    }
+  }
+}

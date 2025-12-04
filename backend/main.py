@@ -1,6 +1,7 @@
 import json, os
 from analyzers.emotion_class import MainAnalyzer
 from model.psych_advisor import PsychAdvisor
+from model.rag_adviser import RAGPsychologyAdvisor
 
 def main():
     out_dir = "/home/fedosdan2/prog/pr_act/PROJECT/analysis_results"
@@ -16,8 +17,10 @@ def main():
     
     analyzer = MainAnalyzer()
     res = analyzer.analyze(data)
-    model = PsychAdvisor()
-    advice = model.get_recommendations(res)
+    #model = PsychAdvisor()
+    #advice = model.get_recommendations(res)
+    rag_advisor = RAGPsychologyAdvisor(knowledge_base_path="/home/fedosdan2/prog/pr_act/PROJECT/lib_liter/literature_data.json")
+    advice = rag_advisor.generate_advice(res)
     print(advice)
     
     f = os.path.basename(fpath)
