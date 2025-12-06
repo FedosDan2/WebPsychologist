@@ -16,7 +16,7 @@ class RAGPsychologyAdvisor:
         # === 1. Загружаем LLM ===
         print("📥 Загружаем LLM (Saiga Mistral 7B GGUF)...")
         self.llm = Llama(
-            model_path="saiga_mistral_7b.Q4_K_M.gguf",
+            model_path="/home/fedosdan2/prog/pr_act/PROJECT/backend/model/mistral/saiga_mistral_7b.Q4_K_M.gguf",
             n_ctx=2048,
             n_threads=6,  # количество CPU-потоков
             verbose=False
@@ -193,19 +193,13 @@ class RAGPsychologyAdvisor:
         prompt = self._build_prompt(analysis, retrieved)
 
         try:
-            # Очистка памяти (опционально, но полезно при нехватке VRAM)
-            torch.cuda.empty_cache()
-            result = self.pipe(
+            output = self.llm(
                 prompt,
-                max_new_tokens=128,
+                max_tokens=256,       # ← не больше 128!
                 temperature=0.7,
-                do_sample=True,
-                truncation=True,
-                pad_token_id=128001
+                stop=["Анализ переписки:", "Релевантные научные данные:", "\n\n"],
+                echo=False
             )
-            generated = result[0]['generated_text']
-            if "Ответ:" in generated:
-                return generated.split("Ответ:", 1)[1].strip()
-            return generated
+            return output["choices"][0]["text"].strip()
         except Exception as e:
             return f"Ошибка генерации: {e}"
